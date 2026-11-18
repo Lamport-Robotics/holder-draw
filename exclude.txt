@@ -1,0 +1,2 @@
+# wallets that get no tickets: team, treasury, presale receiver
+BDHUVDES2m4wK1BW8DK4ZomRTmQqGVrvyRQYdtcUmNLd
