@@ -1,2 +1,3 @@
-# wallets that get no tickets: team, treasury, presale receiver
+# wallets that get no tickets: team, treasury, presale receiver, liquidity pool
 BDHUVDES2m4wK1BW8DK4ZomRTmQqGVrvyRQYdtcUmNLd
+GpMZbSM2GgvTKHJirzeGfMFoaZ8UR2X7F4v8vHTvxFbL
