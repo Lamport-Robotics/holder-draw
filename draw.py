@@ -17,6 +17,8 @@ import hashlib
 import json
 import os
 import sys
+import time
+import urllib.error
 import urllib.request
 from pathlib import Path
 
@@ -27,7 +29,14 @@ def rpc(key: str, method: str, params):
         "https://mainnet.helius-rpc.com/?api-key=" + key, data=body,
         headers={"content-type": "application/json"},
     )
-    res = json.load(urllib.request.urlopen(req, timeout=60))
+    for attempt in range(6):
+        try:
+            res = json.load(urllib.request.urlopen(req, timeout=60))
+            break
+        except urllib.error.HTTPError as exc:
+            if exc.code != 429 or attempt == 5:
+                raise
+            time.sleep(2 * (attempt + 1))  # rate limited: back off and ask again
     if "error" in res:
         raise RuntimeError(res["error"])
     return res["result"]
@@ -39,6 +48,7 @@ def blockhash_at_or_after(key: str, slot: int) -> tuple[int, str]:
             block = rpc(key, "getBlock", [s, {"transactionDetails": "none", "rewards": False, "maxSupportedTransactionVersion": 0}])
         except RuntimeError as exc:
             if "skipped" in str(exc).lower() or "not available" in str(exc).lower() or "-32007" in str(exc) or "-32009" in str(exc):
+                time.sleep(0.3)
                 continue
             raise
         if block and block.get("blockhash"):
